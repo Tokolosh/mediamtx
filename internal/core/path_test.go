@@ -374,7 +374,7 @@ func TestPathRunOnRead(t *testing.T) {
 
 func TestPathMaxReaders(t *testing.T) {
 	p, ok := newInstance("paths:\n" +
-		"  all:\n" +
+		"  all_others:\n" +
 		"    maxReaders: 1\n")
 	require.Equal(t, true, ok)
 	defer p.Close()
@@ -420,7 +420,7 @@ func TestPathRecord(t *testing.T) {
 		"record: yes\n" +
 		"recordPath: " + filepath.Join(dir, "%path/%Y-%m-%d_%H-%M-%S-%f") + "\n" +
 		"paths:\n" +
-		"  all:\n" +
+		"  all_others:\n" +
 		"    record: yes\n")
 	require.Equal(t, true, ok)
 	defer p.Close()
