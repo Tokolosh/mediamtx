@@ -314,7 +314,7 @@ func TestSampleConfFile(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, "../../mediamtx.yml", confPath1)
 
-		tmpf, err := writeTempFile([]byte("paths:\n  all:"))
+		tmpf, err := writeTempFile([]byte("paths:\n  all_others:"))
 		require.NoError(t, err)
 		defer os.Remove(tmpf)
 
