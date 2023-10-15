@@ -111,7 +111,7 @@ func (s *webRTCHTTPServer) onRequest(ctx *gin.Context) {
 	if !isWHIPorWHEP || isPreflight {
 		switch ctx.Request.Method {
 		case http.MethodOptions:
-			ctx.Writer.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PATCH")
+			ctx.Writer.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PATCH, DELETE")
 			ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, If-Match")
 			ctx.Writer.WriteHeader(http.StatusNoContent)
 			return
@@ -305,6 +305,13 @@ func (s *webRTCHTTPServer) onRequest(ctx *gin.Context) {
 			}
 
 			ctx.Writer.WriteHeader(http.StatusNoContent)
+
+		case http.MethodDelete:
+			if fname == "whep" {
+				ctx.Writer.WriteHeader(http.StatusOK)
+			} else {
+				ctx.Writer.WriteHeader(http.StatusMethodNotAllowed)
+			}
 		}
 	}
 }
