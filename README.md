@@ -138,6 +138,8 @@ _rtsp-simple-server_ has been rebranded as _MediaMTX_. The reason is pretty obvi
   * [Standard](#standard)
   * [Raspberry Pi](#raspberry-pi)
   * [OpenWrt](#openwrt-1)
+  * [Cross compile](#cross-compile)
+  * [Compile for all supported platforms](#compile-for-all-supported-platforms)
 * [Specifications](#specifications)
 * [Related projects](#related-projects)
 
@@ -866,7 +868,7 @@ Known clients that can read with RTSP are [FFmpeg](#ffmpeg-1), [GStreamer](#gstr
 
 ##### Latency
 
-The RTSP protocol doesn't introduce any latency by itself. Latency is usually introduced by clients, that put frames in a buffer to compensate network fluctuations. In order to decrease latency, the best way consists in tuning the client. For instance, latency can be decreased with VLC by decreasing the Network caching parameter, that is available in the Open network stream dialog or alternatively ca be set with the command line:
+The RTSP protocol doesn't introduce any latency by itself. Latency is usually introduced by clients, that put frames in a buffer to compensate network fluctuations. In order to decrease latency, the best way consists in tuning the client. For instance, in VLC, latency can be decreased by decreasing the Network caching parameter, that is available in the "Open network stream" dialog or alternatively can be set with the command line:
 
 ```
 vlc --network-caching=50 rtsp://...
@@ -874,7 +876,7 @@ vlc --network-caching=50 rtsp://...
 
 #### RTMP
 
-RTMP is a protocol that allows to read and publish streams, but is less versatile and less efficient than RTSP and WebRTC ((doesn't support UDP, doesn't support most RTSP codecs, doesn't support feedback mechanism)). Streams can be read from the server by using the URL:
+RTMP is a protocol that allows to read and publish streams, but is less versatile and less efficient than RTSP and WebRTC (doesn't support UDP, doesn't support most RTSP codecs, doesn't support feedback mechanism). Streams can be read from the server by using the URL:
 
 ```
 rtmp://localhost/mystream
@@ -1746,6 +1748,46 @@ Clone the repository, enter into the folder and start the building process:
 git clone https://github.com/bluenviron/mediamtx
 cd mediamtx
 CGO_ENABLED=0 go build .
+```
+
+The command will produce the `mediamtx` binary.
+
+If the OpenWrt device doesn't have enough resources to compile, you can [cross compile](#cross-compile) from another machine.
+
+### Cross compile
+
+Cross compilation allows to build an executable for a target machine from another machine with different operating system or architecture. This is useful in case the target machine doesn't have enough resources for compilation or if you don't want to install the compilation dependencies on it.
+
+On the machine you want to use to compile, install git and Go &ge; 1.21. Clone the repository, enter into the folder and start the building process:
+
+```sh
+git clone https://github.com/bluenviron/mediamtx
+cd mediamtx
+CGO_ENABLED=0 GOOS=my_os GOARCH=my_arch go build .
+```
+
+Replace `my_os` and `my_arch` with the operating system and architecture of your target machine. A list of all supported combinations can be obtained with:
+
+```sh
+go tool dist list
+```
+
+For instance:
+
+```sh
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build .
+```
+
+In case of the `arm` architecture, there's an additional flag available, `GOARM`, that allows to set the ARM version:
+
+```sh
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 GOARM=7 go build .
+```
+
+In case of the `mips` architecture, there's an additional flag available, `GOMIPS`, that allows to set additional parameters:
+
+```sh
+CGO_ENABLED=0 GOOS=linux GOARCH=mips GOMIPS=softfloat go build .
 ```
 
 The command will produce the `mediamtx` binary.
